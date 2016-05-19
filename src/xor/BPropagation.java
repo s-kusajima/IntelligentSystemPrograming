@@ -1,6 +1,7 @@
 package xor;
 
 // http://yasu9780.hatenablog.com/entry/2016/01/31/002233
+// Github
 
 import java.util.*;
 
