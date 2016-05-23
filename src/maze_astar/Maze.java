@@ -1,5 +1,7 @@
 package maze_astar;
 
+//http://fantom1x.blog130.fc2.com/blog-entry-192.html
+
 import java.util.PriorityQueue;
 import java.util.Queue;
 
