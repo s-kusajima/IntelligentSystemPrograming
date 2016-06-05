@@ -33,7 +33,7 @@ class makeMaze {
 			block[10][10] = block[9][10] = block[10][9] = 0;
 		}
 		
-		for(int i = 0; i < 12; i++){
+		for(int i = 11; i >= 0; i--){
 			for(int j = 0; j < 12; j++){
 //				System.out.print(block[i][j]);
 				if(i == 1 && j == 1){
