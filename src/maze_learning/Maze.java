@@ -2,12 +2,24 @@ package maze_learning;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.Random;
+
 
 // 穴掘り法で10×10の迷路を自動生成するプログラム．
 public class Maze {
 	
 	private int[][] mazeBlock;
+	
+	static final int INF = Integer.MAX_VALUE; // INF値
+	
+	// 4方向探索用
+	static final int[] dx = {0, 1, 0, -1};
+	static final int[] dy = {-1, 0, 1, 0};
+	static final char[] dir = {'u', 'r', 'd', 'l'};
+	
+	private String path = ""; // 移動経路
 	
 	public Maze(){
 		
@@ -41,10 +53,12 @@ public class Maze {
 		mazeBlock[1][1] = 3;
 		mazeBlock[10][10] = 4;
 		
-		for(int i = 11; i >= 0; i--){
+		
+		// 生成した迷路をコンソールに表示
+		for(int i = 0; i < 11; i++){
 			for(int j = 0; j < 12; j++){
-				System.out.print(mazeBlock[i][j]);
-				/*
+//				System.out.print(mazeBlock[i][j]);
+				
 				if(i == 1 && j == 1){
 					System.out.print("S");
 				}else if(i == 10 && j == 10){
@@ -54,10 +68,66 @@ public class Maze {
 				}else{
 					System.out.print(".");
 				}
-				*/
+				
 			}
 			System.out.println("");
 		}
+		
+		
+		// 以下，A*探索で最短経路を計算するつもり
+		int[][] grid = new int[10][10]; // 移動コスト(距離)の記録
+		
+		// 迷路データのパース
+		for(int i = 0; i < 10; i++){
+			for(int j = 0; j < 10; j++){
+				if(mazeBlock[i + 1][j + 1] == 1){
+					grid[i][j] = -1; // 壁
+				}else if(mazeBlock[i + 1][j + 1] == 3){
+					grid[i][j] = 0; // スタート：距離0
+				}else if(mazeBlock[i + 1][j + 1] == 4){
+					grid[i][j] = INF; // ゴール：距離∞
+				}else{
+					grid[i][j] = INF; // 通路：距離∞
+				}
+			}
+		}
+		
+		// A*探索
+		Queue<Position> q = new PriorityQueue<Position>();
+		
+		Position p = new Position(0, 0);
+		p.estimate = getManhattanDistance(0, 0, 9, 9);
+		q.add(p);
+		
+		while(!q.isEmpty()){
+			p = q.poll();
+			if(p.cost > grid[p.y][p.x]){
+				continue;
+			}
+			if(p.y == 9 && p.x == 9){
+				path = p.path;
+				break;
+			}
+			
+			for(int i = 0; i < dx.length; i++){
+				int nx = p.x + dx[i];
+				int ny = p.y + dy[i];
+				if(nx < 0 || 10 <= nx || ny < 0 || 10 <= ny){
+					continue;
+				}
+				if(grid[ny][nx] > grid[p.y][p.x] + 1){
+					grid[ny][nx] = grid[p.y][p.x] + 1;
+					
+					Position p2 = new Position(nx, ny);
+					p2.cost = grid[ny][nx];
+					p2.estimate = getManhattanDistance(nx, ny, 9, 9) + p2.cost;
+					p2.path = p.path + dir[i];
+					q.add(p2);
+				}
+			}
+		}
+		
+		System.out.println("Path:" + this.path);
 		
 	}
 	
@@ -120,6 +190,32 @@ public class Maze {
 			return true;
 		}
 	}
+	
+	 //マンハッタン距離を求める
+    static int getManhattanDistance(int x1, int y1, int x2, int y2) {
+        return Math.abs(x1 - x2) + Math.abs(y1 - y2);
+    }
+    
+	//位置情報の構造体
+    class Position implements Comparable<Position>{
+        int x;               //座標
+        int y;
+        int cost;            //移動コスト(スタートからの移動量)
+        int estimate;        //推定値(ゴールまでのマンハッタン距離＋移動コスト)
+        String path = "";    //移動経路(移動方向の記録)
+
+        //コンストラクタ
+        public Position(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+
+        //比較関数
+        @Override
+        public int compareTo(Position o) {
+            return this.estimate - o.estimate;    //推定値で小さい順
+        }
+    }
 	
 	public int[][] getMaze(){
 		return this.mazeBlock;
