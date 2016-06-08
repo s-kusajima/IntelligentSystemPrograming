@@ -51,7 +51,45 @@ public class BlockPanel extends JPanel{
 			}catch(IOException e){
 				e.printStackTrace();
 			}
+			break;
+		case 5:
+			try{
+				BufferedImage image = ImageIO.read(new File("up.png"));
+				g.drawImage(image, 0, 0, this);
+			}catch(IOException e){
+				e.printStackTrace();
+			}
+			break;
+		case 6:
+			try{
+				BufferedImage image = ImageIO.read(new File("right.png"));
+				g.drawImage(image, 0, 0, this);
+			}catch(IOException e){
+				e.printStackTrace();
+			}
+			break;
+		case 7:
+			try{
+				BufferedImage image = ImageIO.read(new File("down.png"));
+				g.drawImage(image, 0, 0, this);
+			}catch(IOException e){
+				e.printStackTrace();
+			}
+			break;
+		case 8:
+			try{
+				BufferedImage image = ImageIO.read(new File("left.png"));
+				g.drawImage(image, 0, 0, this);
+			}catch(IOException e){
+				e.printStackTrace();
+			}
+			break;
 		}
+	}
+	
+	public void setImage(Graphics g){
+		super.paintComponent(g);
+		Graphics2D g2 = (Graphics2D)g;
 	}
 
 	public int getBlockStatus(){
