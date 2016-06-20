@@ -19,8 +19,6 @@ public class MazeViewer extends JFrame{
 		
 		for(int i = 0, x = 1, y = 1; i < maze.getPath().length(); i++){
 			
-			
-			
 			char p = maze.getPath().charAt(i);
 			switch(p){
 			case 'u':
